@@ -1,0 +1,35 @@
+<launch>
+    <!-- <group ns="mallard">
+        <node name="pid_control" 
+              pkg="freefloating_gazebo" 
+              type="pid_control" 
+              output="screen" 
+              respawn="true"/>
+    </group> -->
+
+
+    <arg name="ARG_MALLARD_VERSION" value="$(optenv MALLARD_VERSION 001_SIM)" /> 
+
+    
+    <!-- <rosparam file="$(find launch_config)/launch/mallard_params.yaml" command="load"/> -->
+
+    <param name="use_sim_time" value="true"/>
+
+    <!-- Load parameters in yaml file -->
+    <!-- <rosparam file="$(find launch_config)/launch/mallard_params.yaml" command="load"/> -->
+
+    <!-- <node pkg="launch_config" 
+          type="yaml_test.py" 
+          name="yaml_test" 
+          output="screen"/> -->
+
+    <node pkg="mallard_autonomy" 
+          type="traj_control.py" 
+          name="trajectory_control" 
+          output="screen">
+        
+        <rosparam file="$(find launch_config)/launch/$(arg ARG_MALLARD_VERSION).yaml" command="load"/>
+
+    </node>
+
+</launch>

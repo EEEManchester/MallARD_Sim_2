@@ -1,0 +1,9 @@
+# params for mallard
+
+kp: 5
+kd: 5
+kp_psi: 1
+kd_psi: 1
+lim: 3
+lim_psi: 2
+nv: 4

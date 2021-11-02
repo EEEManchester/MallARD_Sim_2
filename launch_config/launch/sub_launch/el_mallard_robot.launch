@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Get MALLARD_VERSION. -->
+    <!-- used to choose the yaml file -->
+    <arg name="ARG_MALLARD_VERSION" value="$(optenv MALLARD_VERSION 001_EL)" /> 
+
+    <!-- Connect to ps4 controller, and publish button presses -->
+    <node pkg="rosserial_python" type="serial_node.py" name="rosserialvl">
+        <param name="port" value="/dev/ttyUSB0" />
+    </node>
+
+    <node pkg="el_mallard" type="han_code.py" name="han_node" output="screen">
+        <rosparam file="$(find launch_config)/$(arg ARG_MALLARD_VERSION)/cfg/yaml/$(arg ARG_MALLARD_VERSION).yaml" command="load"/>
+    </node>
+
+
+</launch>

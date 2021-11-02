@@ -1,0 +1,34 @@
+<launch>
+    <!-- Get the values of Envionrment Variables -->
+    <!-- Get MALLARD_REAL. 1: Real Robot Mode. 0: Simulation Mode. -->
+    <arg name="ARG_MALLARD_REAL" value="$(optenv MALLARD_REAL 0)" /> 
+    <!-- Get MALLARD_COMP. 0: Robot computer. 1: Base Staion comptuer. 2: another comptuer. -->
+    <arg name="ARG_MALLARD_COMP" value="$(optenv MALLARD_COMP 1)" /> 
+
+    <!-- Choose Mode -->
+    <!-- Simulation Mode -->
+    <group if="$(eval ARG_MALLARD_REAL == 0)">
+        <!-- Start Robot -->
+        <include file="$(find launch_config)/launch/sub_launch/mallard_robot.launch"/>
+        <!-- Start Base Station -->
+        <include file="$(find launch_config)/launch/sub_launch/mallard_base_station.launch"/>
+    </group>
+
+    <!-- Real Robot Mode -->
+    <group if="$(eval ARG_MALLARD_REAL == 1)">
+        <!-- Choose launch file for Robot computer -->
+        <group if="$(eval ARG_MALLARD_COMP == 0)">
+            <!-- Start Robot -->
+            <include file="$(find launch_config)/launch/sub_launch/mallard_robot.launch"/>
+            <!-- Run nodes -->
+
+        </group>
+
+        <!-- Choose launch file for Base Station computer -->
+        <group if="$(eval ARG_MALLARD_COMP == 1)">
+            <!-- Start Robot -->
+            <include file="$(find launch_config)/launch/sub_launch/mallard_base_station.launch"/>
+        </group>
+    </group>
+
+</launch>

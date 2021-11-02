@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!-- FOR FUTURE USE. NOT SUPPORTED NOW. DO NOT USE IT. -->
+<launch>
+
+<master auto="start"/>
+
+<!-- Connect to ps4 controller, and publish button presses -->
+<node pkg="rosserial_python" type="serial_node.py" name="rosserialvl">
+   <param name="port" value="/dev/ttyUSB0" />
+</node>
+
+
+<!-- <node pkg="marin_package" type="marin_code.py" name="marin_node" output="screen"> -->
+<node pkg="elmallard_robot" type="marin_code.py" name="marin_node" output="screen">
+</node>
+
+</launch>

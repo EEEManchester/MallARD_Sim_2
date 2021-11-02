@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+   <node pkg="joy" type="joy_node" name="joy">
+      <param name="joy_node/dev" value="/dev/input/js" />
+      <param name="coalesce_interval" type="double" value="0.05" />
+      <param name="autorepeat_rate" type="double" value="20" />
+   </node>
+
+   <node pkg="el_mallard" type="teleop_joy.py" name="ps4_joy" /> 
+</launch>
