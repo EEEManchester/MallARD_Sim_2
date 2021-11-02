@@ -20,8 +20,6 @@
         <group if="$(eval ARG_MALLARD_COMP == 0)">
             <!-- Start Robot -->
             <include file="$(find launch_config)/launch/sub_launch/mallard_robot.launch"/>
-            <!-- Run nodes -->
-
         </group>
 
         <!-- Choose launch file for Base Station computer -->

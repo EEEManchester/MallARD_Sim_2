@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Connect to ps4 controller, and publish button presses -->
+    <node pkg="rosserial_python" type="serial_node.py" name="rosserialvl">
+        <param name="port" value="/dev/ttyUSB0" />
+    </node>
+
+    <node pkg="control_nodes" type="test_wheel_vel_El_move.py" name="test_wheel_vel_El_move" output="screen">
+    </node>
+    
+</launch>

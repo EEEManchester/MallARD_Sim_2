@@ -7,8 +7,7 @@ from geometry_msgs.msg import Twist
 class BodyToWheelVel():
 
 	def __init__(self):
-		self.sub = rospy.Subscriber('mallard/cmd_vel', Twist, self.callback)
-		# self.sub = rospy.Subscriber('mallard/cmd_vel', Twist, self.velmode_test)		
+		self.sub = rospy.Subscriber('mallard/cmd_vel', Twist, self.callback)	
 		self.pub = rospy.Publisher('mallard/cmd_wheel', Twist, queue_size=1)
 
 		self.Vel_Mode = True
@@ -17,9 +16,6 @@ class BodyToWheelVel():
 		self.ctrl_c = False
 		self.rate = rospy.Rate(100) #100Hz loop in order to have deltaT=10ms
 		rospy.on_shutdown(self.shutdownhook)
-
-		
-
 
 		# parameters for el-mallard
         # Using parameters from its own/private namespace
@@ -92,17 +88,17 @@ class BodyToWheelVel():
 		#Stop the wheels
 		rospy.loginfo('Stopping El-MallARD..')
 
-		# reset wheel vels to 0
+		#Reset wheel vels to 0
 		self.Wheel = Twist() 
 		self.publish_wheel()
 	
 
 	#Function that transforms body frame velocities in x y and angular to wheel angular velocities
 	def transform_velocities(self, V_x, V_y, W_z):
-		self.wheel_velocity[0]=(V_x-V_y+(self.lx+self.ly)*W_z)/self.R
-		self.wheel_velocity[1]=-(V_x+V_y-(self.lx+self.ly)*W_z)/self.R
-		self.wheel_velocity[2]=(V_x+V_y+(self.lx+self.ly)*W_z)/self.R
-		self.wheel_velocity[3]=-(V_x-V_y-(self.lx+self.ly)*W_z)/self.R
+		self.wheel_velocity[0]= (V_x -V_y -(self.lx +self.ly) *W_z) /self.R
+		self.wheel_velocity[1]=-(V_x +V_y +(self.lx +self.ly) *W_z) /self.R #negative sign because motor B and D are oppositely positioned compared to A and C.
+		self.wheel_velocity[2]= (V_x +V_y -(self.lx +self.ly) *W_z) /self.R
+		self.wheel_velocity[3]=-(V_x -V_y +(self.lx +self.ly) *W_z) /self.R #negative sign because motor B and D are oppositely positioned compared to A and C.
 		return self.wheel_velocity
 
 	def callback(self, twist):
@@ -113,15 +109,15 @@ class BodyToWheelVel():
 		L1 = twist.angular.y
 		R1 = twist.angular.x
 
-		#L1 -> Velocity Mode, R1 -> Boat Mode
+		#L1 -> Velocity Mode
+		#R1 -> Boat Mode
 		if L1 == 1:
 			# self.Vel_Mode = not self.Vel_Mode
 			self.Vel_Mode = True
 		elif R1 == 1:
 			self.Vel_Mode = False
 
-		#Stop the wheels completely. In any mode.
-		# pause = twist.angular.x #R1 switch on the joystick
+		#X -> Stop the wheels completely. In any mode.
 		pause = twist.linear.z #X button on the joystick
 		if pause == 1: 
 			self.BoatVx = 0
@@ -138,28 +134,20 @@ class BodyToWheelVel():
 		else: 
 			self.Vx = twist.linear.x*2
 			self.Vy = twist.linear.y*2
-			self.Wz = twist.angular.z/2				
-
-		print('cmd vel: ', twist)
-		print('Vel_Mode: ', self.Vel_Mode)
-			
+			self.Wz = twist.angular.z/2
 
 	def body_to_wheel_vel(self):
 		while not self.ctrl_c:
-			# print('cmd_vel')
-			# print(self.cmd_vel)
-			# print('')
-
-			# print('Vels')
-			# print('self.Vx: ', self.Vx)
-			# print('self.Vy: ', self.Vy)
-			# print('self.Wz: ', self.Wz)
-			# print('')
+			#Set Wheel Vels to 0 (pause) to avoid sudden unintended acceleration when Wheel Vels are too low.
+			wheel_vel_abs_sum = sum(map(abs, self.wheel_velocity))
+			if wheel_vel_abs_sum < 1.0e-5:
+				self.BoatVx = 0
+				self.BoatVy = 0
+				self.BoatWz = 0
 
 			if self.Vel_Mode: #if == True
-				# print('Velocity Mode')
+				#Velocity Control Mode
 
-				# self.wheel_velocity=self.transform_velocities(self.cmd_vel.linear.x, self.cmd_vel.linear.y, self.cmd_vel.angular.z)	
 				self.wheel_velocity=self.transform_velocities(self.Vx, self.Vy, self.Wz)	
 				#Assign them to a variable of the message type and publish them
 				self.Wheel.linear.x=self.wheel_velocity[0]
@@ -167,14 +155,8 @@ class BodyToWheelVel():
 				self.Wheel.linear.z=self.wheel_velocity[2]
 				self.Wheel.angular.x=self.wheel_velocity[3]
 				self.Wheel.angular.y=2
-				
-				# print('Wheel Vels')
-				# print(self.Wheel)
-				# print('')
 
 			else:
-				# print('Boat Mode')
-
 				#Allocate velocities for Boat mode. Here Vx,Vy represent forces and Wz is torque
 				#This mode is done in the loop, because the velocities depend not only on current input,but
 				#also on the previous ones
@@ -182,7 +164,7 @@ class BodyToWheelVel():
 				#Calculate the yaw angle using the angular velocity of the boat
 				Angle=self.BoatWz*self.deltaT
 
-				#Go from body frame velocities to inertial frame
+				#body frame velocities to inertial frame
 				dummy = self.BoatVx
 				self.BoatVx=self.BoatVx*math.cos(Angle)+self.BoatVy*math.sin(Angle)
 				self.BoatVy=self.BoatVy*math.cos(Angle)-dummy*math.sin(Angle)
@@ -191,14 +173,6 @@ class BodyToWheelVel():
 				self.BoatVx=self.BoatVx+(((self.Cu*self.BoatVx*abs(self.BoatVx)-self.Cu_l*self.BoatVx+self.Vx)*self.deltaT)/self.M)
 				self.BoatVy=self.BoatVy+(((self.Cv*self.BoatVy*abs(self.BoatVy)-self.Cv_l*self.BoatVy+self.Vy)*self.deltaT)/self.M)
 				self.BoatWz=self.BoatWz+(((self.Cr*self.BoatWz*abs(self.BoatWz)-self.Cr_l*self.BoatWz+self.Wz)*self.deltaT)/self.I)
-						
-
-				# print('Boat Vels')
-				# print('BoatVx: ', self.BoatVx)
-				# print('BoatVy: ', self.BoatVy)
-				# print('BoatWz: ', self.BoatWz)
-				# print('')
-
 
 				#Find the velocity of each wheel
 				self.wheel_velocity=self.transform_velocities(self.BoatVx,self.BoatVy,self.BoatWz)	
@@ -207,76 +181,25 @@ class BodyToWheelVel():
 				self.Wheel.linear.y=self.wheel_velocity[1]
 				self.Wheel.linear.z=self.wheel_velocity[2]
 				self.Wheel.angular.x=self.wheel_velocity[3]
-				self.Wheel.angular.y=2 # why 2?
-				
-				# print('Wheel Vels')
-				# print(self.Wheel)
-				# print('')
+				self.Wheel.angular.y=2
+			
+			# print('Wheel Vels')
+			# print(self.Wheel)
+			# print('')
+
+			# print('Wheel Vels Abs')
+			# print(self.Wheel)
+			# print('')
 			
 			#Publish wheel velocities via 'mallard/cmd_wheel' node
 			self.publish_wheel()
 			#Delay
 			self.rate.sleep()
 
-
-
-	# def velmode_test(self, twist):
-	# 	#Switch between Boat Mode and Velocity Mode
-	# 	#when L1 switch is pushed on the joystick
-	# 	if twist.angular.y == 1:
-	# 		self.Vel_Mode = not self.Vel_Mode
-
-	# 	# print('vel mode test')
-	# 	# print('Cmd_Vel')
-	# 	# print(twist)
-	# 	# print('')
-
-	# 	self.wheel_velocity=self.transform_velocities(twist.linear.x,twist.linear.y,twist.angular.z)	
-	# 	#Assign them to a variable of the message type and publish them
-	# 	self.Wheel.linear.x=self.wheel_velocity[0]
-	# 	self.Wheel.linear.y=self.wheel_velocity[1]
-	# 	self.Wheel.linear.z=self.wheel_velocity[2]
-	# 	self.Wheel.angular.x=self.wheel_velocity[3]
-	# 	self.Wheel.angular.y=2
-	# 	# pub.publish(Wheel)
-		
-	# 	# print('Wheel Vels')
-	# 	# print(self.Wheel)
-	# 	# print('')
-
-	# 	self.publish_wheel()
-
-
-
-	# def test(self):
-	# 	self.Wheel.linear.x = 0
-	# 	self.Wheel.angular.z = 0
-		
-	# 	# self.pub.publish(self.Wheel)
-	# 	self.publish_wheel()
-
-
-	# 	duration = 500
-	# 	i = 0
-	# 	while not self.ctrl_c:
-	# 		rospy.loginfo(i)
-	# 		self.Wheel.linear.x += 0.01
-	# 		self.Wheel.angular.z += 0.01
-	# 		# self.pub.publish(self.Wheel)
-	# 		self.publish_wheel()
-			
-	# 		self.rate.sleep()
-	# 		i+=1
-		
-	# 	# self.stop_elmallard()
-
-
 if __name__ == '__main__':
-	# rospy.init_node('bodytowheelvel_test', anonymous=True)
 	rospy.init_node('han_node')
 	bodytowheelvel_object = BodyToWheelVel()
 	try:
-		# bodytowheelvel_object.test()
 		bodytowheelvel_object.body_to_wheel_vel()
 	except rospy.ROSInterruptException:
 		pass

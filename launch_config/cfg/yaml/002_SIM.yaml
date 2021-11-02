@@ -1,9 +1,0 @@
-# params for mallard
-
-cfg_kp: 500
-cfg_kd: 500
-cfg_kp_psi: 100
-cfg_kd_psi: 100
-cfg_lim: 300
-cfg_lim_psi: 200
-cfg_nv: 400

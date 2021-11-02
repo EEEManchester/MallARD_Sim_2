@@ -34,11 +34,15 @@ def cmd2thr_callback(cmd):
 
 
 def cmd2thr():
-    rospy.init_node('Cmd2thr')
     global pub
-    pub = rospy.Publisher("/mallard/thruster_command", JointState, queue_size=10)
-    rospy.Subscriber("mallard_cmd_vel", Twist, cmd2thr_callback)
+
+    rospy.Subscriber("/mallard/cmd_vel", Twist, cmd2thr_callback)
+    pub = rospy.Publisher("/mallard/thruster_command", JointState, queue_size=2)
+    
+    rospy.spin()
+
 
 if __name__ == '__main__':
+    rospy.init_node('Cmd2thr')
     cmd2thr()
-    rospy.spin()
+    # rospy.spin()

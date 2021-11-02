@@ -1,6 +1,0 @@
-<launch>
-    <node pkg="el_mallard" 
-          type="marin_code_6.py" 
-          name="el_mallard"
-          output="screen"/>
-</launch>

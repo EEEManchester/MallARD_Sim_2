@@ -1,19 +1,16 @@
 <?xml version="1.0"?>
 <launch>
     <!-- Get the value of Environment Variable  -->
-    <!-- Get MALLARD_AUTONOMOUS. 1: launch MallARD with Autonomous Mode. 0: without Autonomous Mode. -->
-    <arg name="ARG_MALLARD_AUTONOMOUS" value="$(optenv MALLARD_AUTONOMOUS 1)" />
-    <!-- Get MALLARD_VERSION. 001_SIM, 002_SIM, 003_SIM, 001_REAL, 002_REAL, 003_REAL -->
+    <!-- Get MALLARD_AUTONOMOUS. 1: Autonomous Mode. 0: Manual Mode. -->
+    <arg name="ARG_MALLARD_AUTONOMOUS" value="$(optenv MALLARD_AUTONOMOUS 0)" />
+    <!-- Get MALLARD_VERSION. 001_SIM, 002_SIM, 003_SIM, 001_REAL, 002_REAL, 003_REAL, 001_EL -->
     <!-- used to choose the yaml file -->
     <arg name="ARG_MALLARD_VERSION" value="$(optenv MALLARD_VERSION 001_SIM)" /> 
-
-
 
     <!-- For El-MallARD -->
     <group if="$(eval ARG_MALLARD_VERSION == '001_EL')">
         <include file="$(find launch_config)/launch/sub_launch/el_mallard_robot.launch"/>
     </group>
-
 
     <!-- For other MallARDs -->
     <group unless="$(eval ARG_MALLARD_VERSION == '001_EL')">
@@ -53,19 +50,13 @@
         </node>
 
         <!-- Choose Mode - based on environment variables -->
-        <!-- If ARG_MALLARD_AUTONOMOUS is 1 or true, launch Robot with Autonomous Mode -->
+        <!-- If ARG_MALLARD_AUTONOMOUS is 1 or true, launch the robot with Autonomous Mode -->
         <group if="$(arg ARG_MALLARD_AUTONOMOUS)">
-            <!-- <rosparam file="$(find launch_config)/launch/$(arg ARG_MALLARD_VERSION).yaml" command="load"/> -->
-            
             <!-- local planner -->
             <node pkg="mallard_autonomy" type="local_planner_cls.py" name="local_planner" output="screen"/>
 
             <!-- trajectory tracking conroller -->
             <node pkg="mallard_autonomy" type="traj_control.py" name="trajectory_control" output="screen">
-                <!-- using the common folder for all the versions of MallARD -->
-                <!-- <rosparam file="$(find launch_config)/cfg/yaml/$(arg ARG_MALLARD_VERSION).yaml" command="load"/> -->
-
-                <!-- using the indivisual folder for each different version of MallARD -->
                 <rosparam file="$(find launch_config)/$(arg ARG_MALLARD_VERSION)/cfg/yaml/$(arg ARG_MALLARD_VERSION).yaml" command="load"/>
             </node>
 

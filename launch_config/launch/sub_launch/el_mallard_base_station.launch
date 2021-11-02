@@ -1,10 +1,22 @@
 <?xml version="1.0"?>
 <launch>
+   <!-- Get MALLARD_VERSION. 001_SIM, 002_SIM, 003_SIM, 001_REAL, 002_REAL, 003_REAL, 001_EL -->
+   <arg name="ARG_MALLARD_VERSION" value="$(optenv MALLARD_VERSION 001_EL)" /> 
+
    <node pkg="joy" type="joy_node" name="joy">
       <param name="joy_node/dev" value="/dev/input/js" />
       <param name="coalesce_interval" type="double" value="0.05" />
       <param name="autorepeat_rate" type="double" value="20" />
    </node>
+   
+   <node pkg="control_nodes" type="joy2command.py" name="Joy2cmd" output="screen">
+      <rosparam file="$(find launch_config)/$(arg ARG_MALLARD_VERSION)/cfg/yaml/$(arg ARG_MALLARD_VERSION).yaml" command="load"/>
+   </node>
 
-   <node pkg="el_mallard" type="teleop_joy.py" name="ps4_joy" /> 
+
+   <!-- Use 3D visualisation "RViz" -->
+   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find launch_config)/cfg/rviz/mallard_rviz.rviz" />
+
+   <!-- launch the dynamic reconfigure -->
+   <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure" />
 </launch>

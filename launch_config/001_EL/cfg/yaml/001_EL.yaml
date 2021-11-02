@@ -1,6 +1,8 @@
 # params for El-MallARD
 
-# Radius of the wheel in m
+#joystick gain
+cfg_joy_gain: 0.7
+#Radius of the wheel in m
 cfg_R: 0.05
 #Distance from wheel center to x axis from body fram in m
 cfg_lx: 0.15
@@ -24,3 +26,12 @@ cfg_Cv_l: 2
 cfg_Cr_l: 0.1
 #Value used to calculate the angle of rotation. Chosen small to approximate dt-from a derivative
 cfg_deltaT: 0.01
+
+#control parameters
+cfg_kp: 5
+cfg_kd: 5
+cfg_kp_psi: 1
+cfg_kd_psi: 1
+cfg_lim: 3
+cfg_lim_psi: 2
+cfg_nv: 4

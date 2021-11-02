@@ -1,5 +1,9 @@
 # params for mallard
+# This yaml file is for example only.
 
+#joystick gain
+cfg_joy_gain: 1
+#control parameters
 cfg_kp: 500000
 cfg_kd: 500000
 cfg_kp_psi: 100000

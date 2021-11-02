@@ -1,39 +1,10 @@
-<!-- # mallard_sim -->
 ### Overview
 
-This repository contains packages to run MallARD in simulation and in the real world.
+This repository contains packages to run MallARD in simulation and in the real world.  
+**Autonomy is not available in this repository. To enable autonomy, the corresponding private package is required.**
 
 -----
-<!-- ### Summary
 
-Clone the repository and build the packages.
-
-The three envirionment variables with default values and corresponding arguments are as follows. They are used to determine launch setups for different circumstances.
-```
-MALLARD_AUTONOMOUS=0
-MALLARD_REAL=0
-MALLARD_COMP=1
-```
-```
-ARG_MALLARD_AUTONOMOUS
-ARG_MALLARD_REAL
-ARG_MALLARD_COMP
-```
-
-To run as Simulation Mode, launch the two launch files in launch_config package:
-
-- mallard_gazebo.launch  
-- mallard_robot_and_base_station.launch
-
-To run as Real Robot Mode, set `MALLARD_REAL` to 1, turn on the robot and from the robot's computer run the robot.launch file, and then from your base station computer launch the following launch file.
-
-- mallard_robot_and_base_station.launch
-
-To start Autonomous mode, set `MALLARD_AUTONOMOUS` to 1.
-
-For example in Simulation Mode, Right Click on the purple cube in the RViz window and Click 'Confirm Coverage'.
-
------ -->
 
 ### Essential tools
 Before going to the next step, please make sure you have followed 1.6 of the ROS guide [here](http://wiki.ros.org/melodic/Installation/Ubuntu) so that you have essential tools such as `rosdep`.
@@ -41,11 +12,15 @@ Before going to the next step, please make sure you have followed 1.6 of the ROS
 
 ### Clone the repository
 
-Make a new catkin workspace (here `mallard_ws` is used as an example), change directory to the `/src` folder of your catkin workspace and clone the git repository. This work was built and tested on Ubuntu 18.04 with ROS Melodic.
+Make a new catkin workspace (here `mallard_ws` is used as an example), change directory to the `/src` folder of your catkin workspace, clone the git repository and update the submodule (`freefloating_gazebo`). This work was built and tested on Ubuntu 18.04 with ROS Melodic.
 ```
 mkdir -p ~/mallard_ws/src 
 cd ~/mallard_ws/src
-git clone https://github.com/EEEManchester/mallard_sim.git
+git clone https://github.com/EEEManchester/MallARD.git 
+
+cd ~/mallard_ws/src/MallARD
+git submodule init 
+git submodule update 
 ```
 
 ### Install catkin_tools
@@ -75,7 +50,7 @@ Now your workspace is recognised by the computer.
 
 Source the bash file for the environment variables used for mallard by running the following command.
 ```
-source ~/mallard_ws/src/mallard_sim/launch_config/mallard_env_variables.sh
+source ~/mallard_ws/src/MallARD/launch_config/mallard_env_variables.sh
 ```
 Now the bash file is recognised by the computer.
 
@@ -85,7 +60,7 @@ Put the lines of commands to source files inside `.bashrc` file by running the f
 Make sure you put `>>` not `>` as `>>` will put the line at the end of .bashrc file while `>` will overwrite the entire file, removing previous contents.
 ```
 echo "source ~/mallard_ws/devel/setup.bash" >> ~/.bashrc 
-echo "source ~/mallard_ws/src/mallard_sim/launch_config/mallard_env_variables.sh" >> ~/.bashrc 
+echo "source ~/mallard_ws/src/MallARD/launch_config/mallard_env_variables.sh" >> ~/.bashrc 
 ```
 
 Run the following command as well for El-MallARD setup.
@@ -96,12 +71,12 @@ echo "alias semael='export ROS_MASTER_URI=http://10.42.0.1:11311 && export ROS_H
 
 ### Environment Variables and Arguments
 There are four environment variables which are used to determine launch setups for different circumstances.
-The environment variables can be changed by modifying the bash file which is at `~/mallard_ws/src/mallard_sim/launch_config/mallard_env_variables.sh`
+The environment variables can be changed by modifying the bash file which is at `~/mallard_ws/src/MallARD/launch_config/mallard_env_variables.sh`
 The environment variables with their default values are as follows.
 ```
-MALLARD_REAL=0            # 1: Real Robot Mode. 0: Simulation Mode.
+MALLARD_REAL=0            # 0: Simulation Mode. 1: Real Robot Mode. 
 MALLARD_COMP=1            # 0: Robot computer. 1: Base Staion comptuer. 2: another comptuer. Only relavant for Real Robot Mode.
-MALLARD_AUTONOMOUS=0      # 1: launch MallARD with Autonomous Mode. 0: Manual Mode.
+MALLARD_AUTONOMOUS=0      # 0: Manual Mode. 1: Autonomous Mode. 
 MALLARD_VERSION='001_SIM' # The version of MallARD. E.g. 001_SIM, 002_SIM, 003_SIM, 001_REAL, 002_REAL, 003_REAL, 001_EL.
 ```
 
@@ -113,7 +88,9 @@ ARG_MALLARD_AUTONOMOUS
 ARG_MALLARD_VERSION
 ```
 
-Depending on the values of the arguments, the launch setups change.
+Depending on the values of the arguments, the launch setups change. 
+
+**Autonomy is not available in this repository. Therefore, `MALLARD_AUTONOMOUS` should remain as 0.**
 
 To check that the environment variables are sourced, run the following command.
 ```
@@ -125,24 +102,22 @@ You should see the environment variables with their values.
 #### How to change the environment variables in a terminal
 If you want to change the values of environment variables for the current terminal, refer to the example commands below.
 ```
-export MALLARD_AUTONOMOUS=1
+export MALLARD_COMP=0
 source .bashrc
 ```
 
 If you want to make persistent changes for new terminals as well, refer to the example commands below.
 ```
-echo "export MALLARD_AUTONOMOUS=1" >> ~/.bashrc  #the command inside the quote gets written in .bashrc so that it applies to all the new terminals.
-source .bashrc                                   #for the current terminal.
+echo "export MALLARD_COMP=0" >> ~/.bashrc  #the command inside the quote gets written in .bashrc so that it applies to all the new terminals.
+source .bashrc                             #for the current terminal.
 ```
 
 You can check the variables using `env`.  
 
 
-
-
 The following diagram shows the connection of launch files, arguments, and nodes of MallARD.
 
-![](readme_images/mallard_connection5.png)
+![](readme_images/mallard_connection_v7.png)
 
 
 ### Install additional packages
@@ -180,9 +155,9 @@ sudo apt install ros-melodic-package-name
 ```
 
 -----
-### Run as Simulation Mode
+### Run Simulation as Manual Mode
 
-To run as Simulation Mode, the two launch files in `launch_config` package (`~/mallard_ws/src/mallard_sim/launch_config/launch`) need to be launched:
+To run simulation, the two launch files in `launch_config` package (`~/mallard_ws/src/MallARD/launch_config/launch`) need to be launched:
 
 - mallard_gazebo.launch  
 - mallard_robot_and_base_station.launch
@@ -202,13 +177,15 @@ roslaunch launch_config mallard_gazebo.launch
 roslaunch launch_config mallard_robot_and_base_station.launch
 ```
 
-You should see windows similar to the following:
+You should see windows similar to the following: 
 
-![](readme_images/Mallard_Gazebo1.png)
-If you are in Manual Mode, you will not see the following window.
-![](readme_images/rqt_reconfigure.png)
-If you are in Manual Mode, you will still see the following window, but without the green, yellow, blue and purple marks.
-![](readme_images/Mallard_RViz2.png)
+##### Gazebo
+![](readme_images/Mallard_Gazebo.png) 
+
+##### RViz
+![](readme_images/MallARD_RViz.png) 
+
+5. The simulated MallARD in Gazebo and its representation in RViz should move as you control with the joystick. 
 
 
 #### Error
@@ -220,37 +197,6 @@ libcurl: (51) SSL: no alternative certificate subject name matches target host n
 ```
 refer to [ROS_Beginner_Teaching_Materials/GazeboErrors.md](https://github.com/EEEManchester/ROS_Beginner_Teaching_Materials/blob/main/GazeboErrors.md). 
 
-
-<!-- This setup is designed to be flexible for use of the robot in the real world or in simulaton. In a real world situation you would turn on the robot and from the robot's computer run the robot.launch file then from your base_station computer you would launch the base_station.launch file. -->
-
-
-### Run as Real Robot Mode
-
-To run as Real Robot Mode,
-1. Set `MALLARD_REAL` to 1. Don't forget to source `.bashrc` file.
-2. Turn on the robot.
-3. From the robot's computer, Run the robot.launch file.
-4. From your base station computer, Run the following command.
-
-```
-roslaunch launch_config mallard_robot_and_base_station.launch 
-```
-
-### Autonomous Mode
-To start Autonomous mode, set `MALLARD_AUTONOMOUS` to 1.
-
-For example in Simulation Mode, Right Click on the purple cube in the RViz window and Click 'Confirm Coverage'.
-
-![](readme_images/Mallard_RViz_right_click2.png)
-
-When the starting point (purple arrow) is too close to the wall, the robot cannot get to the point and hence cannot start following the trajectory. Therefore, move the trajectory and adjust the size of it appropriately by dragging the purple cube and one of the green cubes. And then start Autonomous mode.
-
-![](readme_images/Mallard_RViz_large_right_click2.png)
-
-Then the robot will start moving to the starting point (purple arrow) and start moving along the trajectory (yellow lines). The red arrow represents the heading of the robot. You can see the robot moving in Gazebo as well.
-
-![](readme_images/Mallard_RViz_move3.png)
-![](readme_images/Mallard_Gazebo_move3.png)
 
 
 ### El-MallARD
@@ -338,22 +284,10 @@ The wheels of the robot immediately stop with all the velocities set to 0.
 
 
 ### Configuration for Different Versions of MallARD
-You can choose configuration for different versions of MallARD by selecting one of the yaml files, which is done by setting the value of `MALLARD_VERSION`. For example, `MALLARD_VERSION='001_SIM'`. The availalbe examples are 001_SIM, 002_SIM, 003_SIM, 001_REAL, 002_REAL, 003_REAL, and 001_EL.
+You can choose configuration for different versions of MallARD by selecting one of the yaml files, which is done by setting the value of `MALLARD_VERSION`. For example, `MALLARD_VERSION='001_SIM'`. The availalbe examples are 001_SIM, 002_SIM, 003_SIM, 001_REAL, 002_REAL, 003_REAL, and 001_EL. 
 
-<!-- Currently, there are configuration for 3 simulated robots and 3 real robots with 6 yaml files.
-
-For simulated robots,
-- 001_SIM.yaml  for 001_SIM  (default)
-- 002_SIM.yaml  for 002_SIM
-- 002_SIM.yaml  for 003_SIM
-
-For real robots,
-- 001_REAL.yaml for 001_REAL
-- 002_REAL.yaml for 002_REAL
-- 003_REAL.yaml for 003_REAL -->
-
-Each yaml file has parameters (e.g. kp and kd) for the corresponding MallARD's control such as trajectory control (`~/mallard_ws/src/mallard_sim/mallard_autonomy/src/traj_control.py`) or velocity control (`~/mallard_ws/src/mallard_sim/el_mallard/src/han_code.py`).
-You can modify the yaml files which are at `~/mallard_ws/src/mallard_sim/launch_config/(version)/cfg/yaml`
+Each yaml file has parameters for the corresponding MallARD's control such as velocity control (`~/mallard_ws/src/MallARD/el_mallard/src/han_code.py`).
+You can modify the yaml files which are at `~/mallard_ws/src/MallARD/launch_config/(version)/cfg/yaml`
 
 
 -----
@@ -387,13 +321,3 @@ The following warning occurs when launching `mallard_gazebo.launch`
 ```
 : The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
 ```
-
-<!-- ### Further Work
-Error message when launching mallard_gazebo.launch
-```
-[Err] [REST.cc:205] Error in REST request
-
-libcurl: (51) SSL: no alternative certificate subject name matches target host name 'api.ignitionfuel.org'
-```
-
-Refer to [ROS_Beginner_Teaching_Materials/GazeboErrors.md](https://github.com/EEEManchester/ROS_Beginner_Teaching_Materials/blob/main/GazeboErrors.md). -->
