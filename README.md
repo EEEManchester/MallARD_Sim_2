@@ -55,7 +55,7 @@ echo "source ~/mallard_ws/devel/setup.bash" >> ~/.bashrc
 
 The following diagram shows the connection of launch files and nodes of MallARD.
 
-![](readme_images/mallard_connection_v7.png)
+![](readme_images/mallard_connection_v8.png)
 
 
 ### Install additional packages
