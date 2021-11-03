@@ -1,24 +1,24 @@
 ### Overview
 
-This repository contains packages to run MallARD in simulation and in the real world.  
+This repository contains packages to run MallARD in simulation. 
 **Autonomy is not available in this repository. To enable autonomy, the corresponding private package is required.**
 
 -----
 
 
 ### Essential tools
-Before going to the next step, please make sure you have followed 1.6 of the ROS guide [here](http://wiki.ros.org/melodic/Installation/Ubuntu) so that you have essential tools such as `rosdep`.
+Before going to the next step, please make sure you have followed 1.6 of the [ROS guide](http://wiki.ros.org/melodic/Installation/Ubuntu) so that you have essential tools such as `rosdep`.
 
 
 ### Clone the repository
 
-Make a new catkin workspace (here `mallard_ws` is used as an example), change directory to the `/src` folder of your catkin workspace, clone the git repository and update the submodule (`freefloating_gazebo`). This work was built and tested on Ubuntu 18.04 with ROS Melodic.
+Make a new catkin workspace (`mallard_ws` is used here as an example), change directory to the `/src` folder of your catkin workspace, clone the git repository and update the submodule (`freefloating_gazebo`). This work was built and tested on Ubuntu 18.04 with ROS Melodic.
 ```
 mkdir -p ~/mallard_ws/src 
 cd ~/mallard_ws/src
-git clone https://github.com/EEEManchester/MallARD.git 
+git clone https://github.com/EEEManchester/MallARD_Sim_2.git 
 
-cd ~/mallard_ws/src/MallARD
+cd ~/mallard_ws/src/MallARD_Sim_2
 git submodule init 
 git submodule update 
 ```
@@ -50,7 +50,7 @@ Now your workspace is recognised by the computer.
 
 Source the bash file for the environment variables used for mallard by running the following command.
 ```
-source ~/mallard_ws/src/MallARD/launch_config/mallard_env_variables.sh
+source ~/mallard_ws/src/MallARD_Sim_2/launch_config/mallard_env_variables.sh
 ```
 Now the bash file is recognised by the computer.
 
@@ -60,7 +60,7 @@ Put the lines of commands to source files inside `.bashrc` file by running the f
 Make sure you put `>>` not `>` as `>>` will put the line at the end of .bashrc file while `>` will overwrite the entire file, removing previous contents.
 ```
 echo "source ~/mallard_ws/devel/setup.bash" >> ~/.bashrc 
-echo "source ~/mallard_ws/src/MallARD/launch_config/mallard_env_variables.sh" >> ~/.bashrc 
+echo "source ~/mallard_ws/src/MallARD_Sim_2/launch_config/mallard_env_variables.sh" >> ~/.bashrc 
 ```
 
 Run the following command as well for El-MallARD setup.
@@ -71,7 +71,7 @@ echo "alias semael='export ROS_MASTER_URI=http://10.42.0.1:11311 && export ROS_H
 
 ### Environment Variables and Arguments
 There are four environment variables which are used to determine launch setups for different circumstances.
-The environment variables can be changed by modifying the bash file which is at `~/mallard_ws/src/MallARD/launch_config/mallard_env_variables.sh`
+The environment variables can be changed by modifying the bash file which is at `~/mallard_ws/src/MallARD_Sim_2/launch_config/mallard_env_variables.sh`
 The environment variables with their default values are as follows.
 ```
 MALLARD_REAL=0            # 0: Simulation Mode. 1: Real Robot Mode. 
@@ -157,7 +157,7 @@ sudo apt install ros-melodic-package-name
 -----
 ### Run Simulation as Manual Mode
 
-To run simulation, the two launch files in `launch_config` package (`~/mallard_ws/src/MallARD/launch_config/launch`) need to be launched:
+To run simulation, the two launch files in `launch_config` package (`~/mallard_ws/src/MallARD_Sim_2/launch_config/launch`) need to be launched:
 
 - mallard_gazebo.launch  
 - mallard_robot_and_base_station.launch
@@ -286,8 +286,8 @@ The wheels of the robot immediately stop with all the velocities set to 0.
 ### Configuration for Different Versions of MallARD
 You can choose configuration for different versions of MallARD by selecting one of the yaml files, which is done by setting the value of `MALLARD_VERSION`. For example, `MALLARD_VERSION='001_SIM'`. The availalbe examples are 001_SIM, 002_SIM, 003_SIM, 001_REAL, 002_REAL, 003_REAL, and 001_EL. 
 
-Each yaml file has parameters for the corresponding MallARD's control such as velocity control (`~/mallard_ws/src/MallARD/el_mallard/src/han_code.py`).
-You can modify the yaml files which are at `~/mallard_ws/src/MallARD/launch_config/(version)/cfg/yaml`
+Each yaml file has parameters for the corresponding MallARD's control such as velocity control (`~/mallard_ws/src/MallARD_Sim_2/el_mallard/src/han_code.py`).
+You can modify the yaml files which are at `~/mallard_ws/src/MallARD_Sim_2/launch_config/(version)/cfg/yaml`
 
 
 -----
