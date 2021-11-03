@@ -1,7 +1,6 @@
 ### Overview
 
 This repository contains packages to run MallARD in simulation. 
-**Autonomy is not available in this repository. To enable autonomy, the corresponding private package is required.**
 
 -----
 
@@ -47,69 +46,14 @@ You should be able to see something similar to the following.
 Now your workspace is recognised by the computer.
 
 
-
-Source the bash file for the environment variables used for mallard by running the following command.
-```
-source ~/mallard_ws/src/MallARD_Sim_2/launch_config/mallard_env_variables.sh
-```
-Now the bash file is recognised by the computer.
-
-
-
-Put the lines of commands to source files inside `.bashrc` file by running the following commands so that the setup file and the environment variable bash file can be automatically sourced every time a new terminal is open and hence the workspace and the environment variables can be recognised.
+Put the command to source the file inside `.bashrc` file by running the following command so that the setup file can be automatically sourced and hence the workspace can be recognised every time a new terminal is open. 
 Make sure you put `>>` not `>` as `>>` will put the line at the end of .bashrc file while `>` will overwrite the entire file, removing previous contents.
 ```
-echo "source ~/mallard_ws/devel/setup.bash" >> ~/.bashrc 
-echo "source ~/mallard_ws/src/MallARD_Sim_2/launch_config/mallard_env_variables.sh" >> ~/.bashrc 
+echo "source ~/mallard_ws/devel/setup.bash" >> ~/.bashrc
 ```
 
-### Environment Variables and Arguments
-There are four environment variables which are used to determine launch setups for different circumstances.
-The environment variables can be changed by modifying the bash file which is at `~/mallard_ws/src/MallARD_Sim_2/launch_config/mallard_env_variables.sh`
-The environment variables with their default values are as follows.
-```
-MALLARD_REAL=0            # 0: Simulation Mode. 1: Real Robot Mode. 
-MALLARD_COMP=1            # 0: Robot computer. 1: Base Staion comptuer. 2: another comptuer. Only relavant for Real Robot Mode.
-MALLARD_AUTONOMOUS=0      # 0: Manual Mode. 1: Autonomous Mode. 
-MALLARD_VERSION='001_SIM' # The version of MallARD. E.g. 001_SIM, 002_SIM, 003_SIM, 001_REAL, 002_REAL, 003_REAL, 001_EL.
-```
 
-And there are four arguments to get the values of the corresponding environment variables.
-```
-ARG_MALLARD_REAL
-ARG_MALLARD_COMP
-ARG_MALLARD_AUTONOMOUS
-ARG_MALLARD_VERSION
-```
-
-Depending on the values of the arguments, the launch setups change. 
-
-**Autonomy is not available in this repository. Therefore, `MALLARD_AUTONOMOUS` should remain as 0.**
-
-To check that the environment variables are sourced, run the following command.
-```
-env | grep MALLARD
-```
-You should see the environment variables with their values.
-
-
-#### How to change the environment variables in a terminal
-If you want to change the values of environment variables for the current terminal, refer to the example commands below.
-```
-export MALLARD_COMP=0
-source .bashrc
-```
-
-If you want to make persistent changes for new terminals as well, refer to the example commands below.
-```
-echo "export MALLARD_COMP=0" >> ~/.bashrc  #the command inside the quote gets written in .bashrc so that it applies to all the new terminals.
-source .bashrc                             #for the current terminal.
-```
-
-You can check the variables using `env`.  
-
-
-The following diagram shows the connection of launch files, arguments, and nodes of MallARD.
+The following diagram shows the connection of launch files and nodes of MallARD.
 
 ![](readme_images/mallard_connection_v7.png)
 
