@@ -1,6 +1,6 @@
 ### Overview
 
-This repository contains packages to run MallARD in simulation. 
+This repository contains packages to run MallARD in simulation as manual mode.
 
 -----
 
@@ -115,7 +115,7 @@ roslaunch launch_config mallard_gazebo.launch
 roslaunch launch_config mallard_robot_and_base_station.launch
 ```
 
-You should see windows similar to the following: 
+You should see windows similar to the followings: 
 
 ##### Gazebo
 ![](readme_images/Mallard_Gazebo.png) 
@@ -136,16 +136,6 @@ libcurl: (51) SSL: no alternative certificate subject name matches target host n
 refer to [ROS_Beginner_Teaching_Materials/GazeboErrors.md](https://github.com/EEEManchester/ROS_Beginner_Teaching_Materials/blob/main/GazeboErrors.md). 
 
 
-
-
-
-### Configuration for Different Versions of MallARD
-You can choose configuration for different versions of MallARD by selecting one of the yaml files, which is done by setting the value of `MALLARD_VERSION`. For example, `MALLARD_VERSION='001_SIM'`. The availalbe examples are 001_SIM, 002_SIM, 003_SIM, 001_REAL, 002_REAL, 003_REAL, and 001_EL. 
-
-Each yaml file has parameters for the corresponding MallARD's control such as velocity control (`~/mallard_ws/src/MallARD_Sim_2/el_mallard/src/han_code.py`).
-You can modify the yaml files which are at `~/mallard_ws/src/MallARD_Sim_2/launch_config/(version)/cfg/yaml`
-
-
 -----
 ### Tips
 #### Gazebo Real Time Factor
@@ -153,8 +143,6 @@ If the gazebo simulation seems slow, check `Real Time Factor` at the bottom of t
 
 One way to resolve the issue is as follows.
 Go to `World` tab > `Physics` > and change `real time update rate` to 0.
-
-Refer [here](https://answers.gazebosim.org/question/25190/how-to-increase-real-time-factor-while-doing-simulation/).
 
 
 ### Warnings
