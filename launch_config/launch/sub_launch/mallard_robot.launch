@@ -1,72 +1,35 @@
-<?xml version="1.0"?>
-<launch>
-    <!-- Get the value of Environment Variable  -->
-    <!-- Get MALLARD_AUTONOMOUS. 1: Autonomous Mode. 0: Manual Mode. -->
-    <arg name="ARG_MALLARD_AUTONOMOUS" value="$(optenv MALLARD_AUTONOMOUS 0)" />
-    <!-- Get MALLARD_VERSION. 001_SIM, 002_SIM, 003_SIM, 001_REAL, 002_REAL, 003_REAL, 001_EL -->
-    <!-- used to choose the yaml file -->
-    <arg name="ARG_MALLARD_VERSION" value="$(optenv MALLARD_VERSION 001_SIM)" /> 
-
-    <!-- For El-MallARD -->
-    <group if="$(eval ARG_MALLARD_VERSION == '001_EL')">
-        <include file="$(find launch_config)/launch/sub_launch/el_mallard_robot.launch"/>
-    </group>
-
-    <!-- For other MallARDs -->
-    <group unless="$(eval ARG_MALLARD_VERSION == '001_EL')">
-    
-        <!-- SLAM -->
-        <!-- tf1: no odom to base_link, tf2: base_link to laser - inside urdf file at mallard_main.xacro  -->
-        <node name="hector_mapping" pkg="hector_mapping" type="hector_mapping">
-            <!-- Frame names -->
-            <param name="pub_map_odom_transform" value="true"/>
-            <param name="map_frame" value="map" />
-            <param name="base_frame" value="base_link" />
-            <param name="odom_frame" value="base_link" />
-            
-            <!-- First one (not documented) used only for debuging -->
-            <param name="use_tf_scan_transformation" value="true"/>
-            <param name="use_tf_pose_start_estimate" value="false"/>
-            
-            <!-- Map size / start point -->
-            <param name="map_resolution" value="0.025"/>
-            <param name="map_size" value="512"/>
-            <param name="map_start_x" value="0.5"/>
-            <param name="map_start_y" value="0.5" />
-            <param name="map_multi_res_levels" value="2" />
-            
-            <!-- Map update parameters -->
-            <param name="update_factor_free" value="0.4"/>
-            <param name="update_factor_occupied" value="0.9" />    
-            <param name="map_update_distance_thresh" value="0.4"/>
-            <param name="map_update_angle_thresh" value="0.06" />
-            <param name="laser_z_min_value" value = "-1.0" />
-            <param name="laser_z_max_value" value = "1.0" />
-            
-            <!-- Advertising config --> 
-            <param name="advertise_map_service" value="true"/>
-            <param name="scan_subscriber_queue_size" value="5"/>
-            <param name="scan_topic" value="scan"/>
-        </node>
-
-        <!-- Choose Mode - based on environment variables -->
-        <!-- If ARG_MALLARD_AUTONOMOUS is 1 or true, launch the robot with Autonomous Mode -->
-        <group if="$(arg ARG_MALLARD_AUTONOMOUS)">
-            <!-- local planner -->
-            <node pkg="mallard_autonomy" type="local_planner_cls.py" name="local_planner" output="screen"/>
-
-            <!-- trajectory tracking conroller -->
-            <node pkg="mallard_autonomy" type="traj_control.py" name="trajectory_control" output="screen">
-                <rosparam file="$(find launch_config)/$(arg ARG_MALLARD_VERSION)/cfg/yaml/$(arg ARG_MALLARD_VERSION).yaml" command="load"/>
-            </node>
-
-            <!-- Use markers to control where the robot goes -->
-            <node pkg="mallard_autonomy" type="coverage_selection.py" name="areaSelectionMarkers" output="screen"/>
-
-            <!-- launch the dynamic reconfigure -->
-            <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure" />
-        </group>
-
-    </group>
-
+<launch>    
+    <!-- SLAM -->
+    <!-- tf1: no odom to base_link, tf2: base_link to laser - inside urdf file at mallard_main.xacro  -->
+    <node name="hector_mapping" pkg="hector_mapping" type="hector_mapping">
+        <!-- Frame names -->
+        <param name="pub_map_odom_transform" value="true"/>
+        <param name="map_frame" value="map" />
+        <param name="base_frame" value="base_link" />
+        <param name="odom_frame" value="base_link" />
+        
+        <!-- First one (not documented) used only for debuging -->
+        <param name="use_tf_scan_transformation" value="true"/>
+        <param name="use_tf_pose_start_estimate" value="false"/>
+        
+        <!-- Map size / start point -->
+        <param name="map_resolution" value="0.025"/>
+        <param name="map_size" value="512"/>
+        <param name="map_start_x" value="0.5"/>
+        <param name="map_start_y" value="0.5" />
+        <param name="map_multi_res_levels" value="2" />
+        
+        <!-- Map update parameters -->
+        <param name="update_factor_free" value="0.4"/>
+        <param name="update_factor_occupied" value="0.9" />    
+        <param name="map_update_distance_thresh" value="0.4"/>
+        <param name="map_update_angle_thresh" value="0.06" />
+        <param name="laser_z_min_value" value = "-1.0" />
+        <param name="laser_z_max_value" value = "1.0" />
+        
+        <!-- Advertising config --> 
+        <param name="advertise_map_service" value="true"/>
+        <param name="scan_subscriber_queue_size" value="5"/>
+        <param name="scan_topic" value="scan"/>
+    </node>
 </launch>

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import rospy
-# import numpy as np
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
 
@@ -15,7 +14,6 @@ def joy2cmd_callback(joyData):
     cmd_vel.angular.x = joyData.buttons[5] # R1
     cmd_vel.angular.y = joyData.buttons[4] # L1
 
-    # print(cmd_vel)
     pub.publish(cmd_vel)
 
 def joy2cmd():
@@ -25,7 +23,7 @@ def joy2cmd():
 
     cmd_vel = Twist()
 
-    joy_gain = rospy.get_param('~cfg_joy_gain')
+    joy_gain = 1
     
     rospy.Subscriber("joy", Joy, joy2cmd_callback)
     pub = rospy.Publisher("/mallard/cmd_vel", Twist, queue_size=2)
@@ -36,5 +34,3 @@ def joy2cmd():
 if __name__ == '__main__':
     rospy.init_node('Joy2cmd')
     joy2cmd()
-    # rospy.spin()
-

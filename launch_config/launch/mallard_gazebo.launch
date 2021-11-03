@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <launch>
   <!-- Find model and set other parameters -->
   <arg name="model" default="$(find launch_config)/urdf/mallard_main.xacro"/>
@@ -33,5 +32,4 @@
     
     <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher"/>
   </group>
-
  </launch>
