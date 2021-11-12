@@ -1,0 +1,6 @@
+<launch>
+    <!-- Start the Robot -->
+    <include file="$(find launch_config)/launch/sub_launch/mallard_robot.launch"/>
+    <!-- Start the Base Station -->
+    <include file="$(find launch_config)/launch/sub_launch/mallard_base_station.launch"/>    
+</launch>

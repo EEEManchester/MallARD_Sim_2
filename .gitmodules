@@ -1,0 +1,3 @@
+[submodule "freefloating_gazebo"]
+	path = freefloating_gazebo
+	url = https://github.com/EEEManchester/freefloating_gazebo.git
