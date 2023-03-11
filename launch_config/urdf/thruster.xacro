@@ -3,7 +3,7 @@
 
     <xacro:macro name="thruster_link" params="name xyz rpy">
       
-      <joint name="${name}" type="revolute">
+      <joint name="${name}_joint" type="revolute">
           <parent link="base_link"/>
           <child link="${name}"/>
           <origin xyz="${xyz}" rpy="${rpy}"/>
@@ -15,16 +15,16 @@
       <link name="${name}">      
           <visual name="${name}_1">
               <geometry>
-                  <cylinder length="${tl1}" radius="${tr1}"/>
+                  <cylinder length="${thruster_length_1}" radius="${thruster_radius_1}"/>
               </geometry>
               <material name="blue">
                   <color rgba="0 0 0.8 1"/>
               </material>
           </visual>  
           <visual name="${name}_2">
-              <origin xyz="0 0 ${tl2/4}"/>
+              <origin xyz="0 0 ${thruster_length_2/4}"/>
               <geometry>
-                  <cylinder length="${tl2}" radius="${tr2}"/>
+                  <cylinder length="${thruster_length_2}" radius="${thruster_radius_2}"/>
               </geometry>
               <material name="blue">
                  <color rgba="0 0 0.8 1"/>

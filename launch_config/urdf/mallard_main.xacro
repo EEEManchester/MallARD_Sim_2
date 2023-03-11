@@ -10,14 +10,10 @@
 
   <!-- Thrusters components & constants -->
   <xacro:property name="PI" value="3.1415926535897931"/>
-  <xacro:property name="tr1" value=".02" />
-  <xacro:property name="tl1" value=".1" />
-  <xacro:property name="tr2" value=".047" />
-  <xacro:property name="tl2" value=".045" />
-
-  <gazebo reference="base_link">
-      <material>Gazebo/Blue</material>
-  </gazebo>
+  <xacro:property name="thruster_length_1" value=".1" />
+  <xacro:property name="thruster_length_2" value=".045" />
+  <xacro:property name="thruster_radius_2" value=".047" />
+  <xacro:property name="thruster_radius_1" value=".02" />
 
   <link name="base_link">
       <!-- Channels (aluminum connecting elements) -->
@@ -88,22 +84,22 @@
 	</xacro:lidar> 
 
   <!-- Ballast -->
-  <xacro:ballast name="ballast_1" mass="0.14" xyz=" 0.225 -0.25 0.076" rpy="${PI/2} 0 0"/>
+  <xacro:ballast name="ballast_1" mass="0.14" xyz="0.225 -0.25 0.076" rpy="${PI/2} 0 0"/>
   <xacro:ballast name="ballast_2" mass="0.02" xyz="-0.225 -0.25 0.076" rpy="${PI/2} 0 0"/>
 
   <!-- Forward thrusters -->
-  <xacro:thruster_link name="x_thr_left"   xyz="${(tl1/2)-0.188}  0.207 -0.041" rpy="0 ${-PI/2} 0"/>
-  <xacro:thruster_link name="x_thr_right"  xyz="${(tl1/2)-0.188} -0.207 -0.041" rpy="0 ${-PI/2} 0"/>
+  <xacro:thruster_link name="x_thr_left"   xyz="${(thruster_length_1/2)-0.188} 0.207 -0.041" rpy="0 ${-PI/2} 0"/>
+  <xacro:thruster_link name="x_thr_right"  xyz="${(thruster_length_1/2)-0.188} -0.207 -0.041" rpy="0 ${-PI/2} 0"/>
   <!-- Side thrusters -->
-  <xacro:thruster_link name="y_thr_right"   xyz=" 0.233 ${0.114-(tl1/2)} -0.041" rpy="0 ${PI/2} ${PI/2}"/>
-  <xacro:thruster_link name="y_thr_left"  xyz="-0.233 ${0.114-(tl1/2)} -0.041" rpy="0 ${PI/2} ${PI/2}"/>
+  <xacro:thruster_link name="y_thr_right"   xyz="0.233 ${0.114-(thruster_length_1/2)} -0.041" rpy="0 ${PI/2} ${PI/2}"/>
+  <xacro:thruster_link name="y_thr_left"  xyz="-0.233 ${0.114-(thruster_length_1/2)} -0.041" rpy="0 ${PI/2} ${PI/2}"/>
 
   <!-- FreeFloating plugin -->
   <gazebo>
     <plugin name="freefloating_gazebo_control" filename="libfreefloating_gazebo_control.so">
           <switchService>switch</switchService>
           <updateRate>100</updateRate>
-          <link>base_link</link>
+          <link>mallard_link</link>
 
                 <!-- THRUST CONTROL -->
                 <!--    these two thrusters are actually orientable, so the map should not be hard-coded 
@@ -137,6 +133,5 @@
 
       </plugin>
   </gazebo>
-
 
 </robot>

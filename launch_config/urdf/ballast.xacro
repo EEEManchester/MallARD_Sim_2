@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mallard">
     <xacro:macro name="ballast" params="name mass xyz rpy">
         <link name="${name}">
@@ -17,7 +18,7 @@
             </inertial>
         </link>
 
-        <joint name="${name}" type="fixed">
+        <joint name="${name}_joint" type="fixed">
             <origin xyz="${xyz}"/>
             <parent link="base_link"/>
             <child link="${name}"/>
