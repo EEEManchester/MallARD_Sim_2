@@ -10,7 +10,7 @@
   <!-- Gazebo world with desired characteristics as world_name -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="gui" value="$(arg gz)" />
-    <arg name="paused" value="false"/>
+    <arg name="paused" value="true"/>
     <arg name="world_name" value="$(find launch_config)/world/pond_w_floor.world"/>
   </include>
 
