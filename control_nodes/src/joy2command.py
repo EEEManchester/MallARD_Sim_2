@@ -25,8 +25,8 @@ def joy2cmd():
 
     joy_gain = 1
     
-    rospy.Subscriber("joy", Joy, joy2cmd_callback)
-    pub = rospy.Publisher("/mallard/cmd_vel", Twist, queue_size=2)
+    rospy.Subscriber("/joy", Joy, joy2cmd_callback)
+    pub = rospy.Publisher("/mallard/cmd_vel", Twist, queue_size=10)
 
     rospy.spin()
 
@@ -34,3 +34,4 @@ def joy2cmd():
 if __name__ == '__main__':
     rospy.init_node('Joy2cmd')
     joy2cmd()
+    rospy.spin()

@@ -37,7 +37,7 @@ def cmd2thr():
     global pub
 
     rospy.Subscriber("/mallard/cmd_vel", Twist, cmd2thr_callback)
-    pub = rospy.Publisher("/mallard/thruster_command", JointState, queue_size=2)
+    pub = rospy.Publisher("/mallard/thruster_command", JointState, queue_size=10)
     
     rospy.spin()
 
@@ -45,4 +45,4 @@ def cmd2thr():
 if __name__ == '__main__':
     rospy.init_node('Cmd2thr')
     cmd2thr()
-    # rospy.spin()
+    rospy.spin()
